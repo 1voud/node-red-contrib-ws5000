@@ -1,0 +1,12 @@
+{
+    "name" : "node-red-contrib-ws5000",
+    "version"      : "0.0.1",
+    "dependencies": {
+        "node-hid": "^0.7.6"
+    },
+    "node-red" : {
+        "nodes": {
+            "ws5000": "src/ws5000.js"
+        }
+    }
+}
