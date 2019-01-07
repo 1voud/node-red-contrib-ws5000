@@ -364,40 +364,8 @@ var first;
 			  station.close();
 			} 
                 };
-                // make sure all listeners removed, before binding new local function
                 station.removeAllListeners('data');
                 station.on('data',_chunk);
-return;
-
-                var started = process.hrtime();
-                wusb.getRange(station, 0x00,0xff,function(fb) {
-                        fixed = wusb.decode(fb,true);
-                        var current = fixed['fb.current_pos'];
-			console.log(current);
-                        wusb.getRange(station, current, current,function(reading) {
-                                var completed = process.hrtime(started); // [secs,ns]
-                                weather = wusb.decode(reading,false);
-                                // prepend this weather record to recent array and trim to required length
-                                wusb.recent.unshift(weather);
-                                wusb.recent = wusb.recent.slice(0,wusb.conf.recent||5);
-                                // setup date info - note that the USB device time may be out of sync
-                                weather.unix = (new Date(wusb.lastUpdated())).getTime() - weather['rf.delay']*60000;
-                                weather.datetime = new Date(weather.unix);
-                                weather.lastUpdated = new Date(wusb.lastUpdated());
-				var msg={};
-				msg.payload = weather;
-				node.send(msg);
-                                //console.log('done');
-				station.removeAllListeners('data');
-		                station.write([0xA1, 0, 10, 0x20,0xA1, 0, 10, 0x20]);
-                		station.close();
-       			         console.log('closed');
-
-                        });
-                
-                });
-
-		//console.log('after');
         });
     }
     RED.nodes.registerType("ws5000",Ws5000Node);
